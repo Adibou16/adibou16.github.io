@@ -1,6 +1,6 @@
 var rockets;
 var population;
-var lifespan = 400;
+var lifespan = 600;
 var gen = 0;
 var wins = 0;
 var maxfit = 0;
