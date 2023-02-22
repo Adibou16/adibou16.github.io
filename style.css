@@ -32,16 +32,20 @@ img {
 
 .logos {
     height: 30%;
+    filter: blur(5px);
+    transform: translateX(-100%);
 }
 
 .logos:nth-of-type(1) {
     left: 10%;
     top: 25%;
+    transition-delay: 200ms;
 }
 
 .logos:nth-of-type(2) {
     left: 10%;
     top: 65%;
+    transition-delay: 200ms;
 }
 
 .logos:nth-of-type(3) {
@@ -102,6 +106,7 @@ a:hover {
     top: 210%;
     width: 3%;
     height: auto;
+    transform: translateY(100%);
 }
 
 .down_arrow {
@@ -109,6 +114,7 @@ a:hover {
     top: 90%;
     width: 3%;
     height: auto;
+    transform: translateY(-100%);
 }
 
 .note {
@@ -135,8 +141,19 @@ a:hover {
     right: 15%;
 }
 
-
-
 section:nth-child(odd) {
     background: gray;
+}
+
+.hidden {
+    opacity: 0;
+    transition: all 1.5s;
+}
+
+.show {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(0);
+    transform: translateY(0);
+}
 }

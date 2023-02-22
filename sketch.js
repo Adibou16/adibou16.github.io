@@ -1,4 +1,12 @@
-var tl = new TimelineMax();
-const controller = new ScrollMagic.Controller();
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('show');
+      } else {
+        entry.target.classList.remove('show');
+      }
+  });
+});
 
-tl.from("up_arrow", 0.5, {x: 200, opacity: 0})
+const hiddenElements = document.querySelectorAll('.hidden')
+hiddenElements.forEach((el) => observer.observe(el));
