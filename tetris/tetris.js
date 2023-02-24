@@ -37,7 +37,7 @@ function drawGrid(ctx, w, h, step) {
 };
 
 // Hold
-var hold_scl = scl * 0.03
+var hold_scl = 0.6
 var hold_size = h * hold_scl
 var holdElementID = "hold";
 
@@ -45,14 +45,13 @@ const hold = document.getElementById(holdElementID);
 hold.width = hold_size;
 hold.height = hold_size;
 
-const hold_pos = {x: 0, y: 0};
-var hold_matrix = createMatrix(10, 20);
+const hold_pos = {x: 1.5, y: 0.5};
 var hold_ctx = hold.getContext('2d');
 
 function drawHold(hold_ctx) {
     hold_ctx.fillStyle = '#000';
-    hold_ctx.fillRect(0, 0, canvas.width, canvas.height);
-    drawMatrix(hold_matrix, hold_pos, hold_ctx)
+    hold_ctx.fillRect(0, 0, hold_size, hold_size);
+    drawMatrix(scaleMatrix(player.matrix, 3), hold_pos, hold_ctx)
 };
 
 // Physics
@@ -97,6 +96,22 @@ function createMatrix(w, h) {
     }
     return matrix;
 }
+
+const scaleMatrix = (arr, scale) => {
+    let newArr = [];
+    arr.forEach((el) => {
+        let newArrRow = [];
+        el.forEach((el) => {
+            for (let j = 0; j < scale; j++) {
+                newArrRow.push(el);
+            }
+        });
+        for(let i = 0; i < scale ; i++) {
+            newArr.push(newArrRow);
+        }
+    });
+    return newArr;
+};
 
 function createPiece(type) {
     if (type === 'I') {
@@ -259,8 +274,7 @@ function update(time = 0) {
 
     drawGrid(ctx, w, h, step);
     requestAnimationFrame(update);
-    console.log(player.matrix)
-}
+} 
 
 function updateScore() {
     document.getElementById('score').innerText = player.score;
