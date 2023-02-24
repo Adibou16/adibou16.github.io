@@ -45,13 +45,14 @@ const hold = document.getElementById(holdElementID);
 hold.width = hold_size;
 hold.height = hold_size;
 
+const hold_pos = {x: 0, y: 0};
+var hold_matrix = createMatrix(10, 20);
 var hold_ctx = hold.getContext('2d');
-const hold_pos = {x: 4, y: 4}
 
 function drawHold(hold_ctx) {
     hold_ctx.fillStyle = '#000';
     hold_ctx.fillRect(0, 0, canvas.width, canvas.height);
-    drawMatrix(player.matrix, hold_pos, hold_ctx)
+    drawMatrix(hold_matrix, hold_pos, hold_ctx)
 };
 
 // Physics
@@ -258,6 +259,7 @@ function update(time = 0) {
 
     drawGrid(ctx, w, h, step);
     requestAnimationFrame(update);
+    console.log(player.matrix)
 }
 
 function updateScore() {
@@ -300,7 +302,6 @@ const player = {
     matrix: null,
     score: 0,
 };
-
 
 playerReset();
 updateScore();
