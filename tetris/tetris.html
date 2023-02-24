@@ -1,0 +1,42 @@
+<html>
+
+<head>
+    <title>Tetris</title>
+    <style>
+        body {
+            background: #202028;
+            color: #fff;
+            font-family: sans-serif;
+            font-size: 2em;
+            text-align: center;
+        }
+        
+        #grid {
+            border: solid .2em #fff;
+            height: 90vh;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #hold {
+            position: absolute;
+            left: 20%;
+            top: 10%;
+            border: solid .2em #fff;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div id="score"></div>
+    <canvas id="grid"></canvas>
+    <canvas id="hold"></canvas>
+    <script src="Tetris.js"></script>
+    <audio autoplay loop>
+        <source src="tetris.mp3" type="audio/mpeg">
+    </audio>
+</body>
+
+</html>
