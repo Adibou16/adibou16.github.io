@@ -1,4 +1,4 @@
-// Grid
+// Grid Style
 
 var w = 240;
 var h = 400;
@@ -36,7 +36,10 @@ function drawGrid(ctx, w, h, step) {
     drawMatrix(player.matrix, player.pos, ctx);
 };
 
-// Hold
+
+
+// Hold Style
+
 var hold_scl = 0.6
 var hold_size = h * hold_scl
 var holdElementID = "hold";
@@ -51,10 +54,14 @@ var hold_ctx = hold.getContext('2d');
 function drawHold(hold_ctx) {
     hold_ctx.fillStyle = '#000';
     hold_ctx.fillRect(0, 0, hold_size, hold_size);
-    drawMatrix(scaleMatrix(player.matrix, 3), hold_pos, hold_ctx)
+    if (player.held_matrix != null) {
+        drawMatrix(scaleMatrix(player.held_matrix, 3), hold_pos, hold_ctx)
+    }
 };
 
-// Physics
+
+
+// Arena
 
 function arenaSweep() {
     let rowCount = 1;
@@ -112,6 +119,10 @@ const scaleMatrix = (arr, scale) => {
     });
     return newArr;
 };
+
+
+
+// Pieces
 
 function createPiece(type) {
     if (type === 'I') {
@@ -206,6 +217,7 @@ function playerDrop() {
     player.pos.y++;
     if (collide(arena, player)) {
         player.pos.y--;
+        has_just_held = false;
         merge(arena, player);
         playerReset();
         arenaSweep();
@@ -223,7 +235,18 @@ function playerMove(offset) {
 
 function playerReset() {
     const pieces = 'TJLOSZI';
-    player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
+    last = player.matrix
+    if (has_just_held == true) {
+        if (first_held == true) {
+            player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
+            first_held = false
+        } else {
+            player.matrix = player.held_matrix
+        }
+        player.held_matrix = last
+    } else {
+        player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
+    }
     player.pos.y = 0;
     player.pos.x = (arena[0].length / 2 | 0) -
         (player.matrix[0].length / 2 | 0);
@@ -237,7 +260,7 @@ function playerReset() {
 
 function playerRotate(dir) {
     const pos = player.pos.x;
-    let offset = 1;
+    let offset = 1; 
     rotate(player.matrix, dir);
     while (collide(arena, player)) {
         player.pos.x += offset;
@@ -250,14 +273,29 @@ function playerRotate(dir) {
     }
 }
 
+function hold_piece() {
+    if (has_just_held == false) {
+        has_just_held = true;
+        playerReset()
+    } else {
+        return;
+    }
+}
+
+
+
+// Game
+
+let first_held = true
+let has_just_held = false
 let dropCounter = 0;
 let dropInterval = 1000;
 let difficulty = 49;
-
 let lastTime = 0;
 
 function update(time = 0) {
     const deltaTime = time - lastTime;
+    console.log(has_just_held, first_held)
 
     dropCounter += deltaTime;
     if (dropCounter > dropInterval) {
@@ -296,6 +334,9 @@ document.addEventListener('keydown', event => {
     if (event.keyCode === 69) {
         playerRotate(1);
     }
+    if (event.keyCode === 87) {
+        hold_piece();
+    }
 });
 
 const colors = [
@@ -314,6 +355,7 @@ const arena = createMatrix(12, 20);
 const player = {
     pos: {x: 0, y: 0},
     matrix: null,
+    held_matrix: null,
     score: 0,
 };
 
