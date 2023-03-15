@@ -5,11 +5,9 @@ var h = 400;
 let scl = 20;
 var step = 20;
 var canvasElementId = "grid";
-
 const canvas = document.getElementById(canvasElementId);
 canvas.width = w;
 canvas.height = h;
-
 var ctx = canvas.getContext('2d');
 
 function drawGrid(ctx, w, h, step) {
@@ -40,24 +38,37 @@ function drawGrid(ctx, w, h, step) {
 
 // Hold Style
 
-var hold_scl = 0.6
-var hold_size = h * hold_scl
+var element_scl = 0.6
+var element_size = h * element_scl
 var holdElementID = "hold";
-
 const hold = document.getElementById(holdElementID);
-hold.width = hold_size;
-hold.height = hold_size;
-
-const hold_pos = {x: 1.5, y: 0.5};
+hold.width = element_size;
+hold.height = element_size;
+const element_pos = {x: 1.5, y: 0.5};
 var hold_ctx = hold.getContext('2d');
 
 function drawHold(hold_ctx) {
     hold_ctx.fillStyle = '#000';
-    hold_ctx.fillRect(0, 0, hold_size, hold_size);
+    hold_ctx.fillRect(0, 0, element_size, element_size);
     if (player.held_matrix != null) {
-        drawMatrix(scaleMatrix(player.held_matrix, 3), hold_pos, hold_ctx)
-    }
+        drawMatrix(scaleMatrix(player.held_matrix, 3), element_pos, hold_ctx)
+    };
 };
+
+
+
+// Next Style
+var nextElementID = "next";
+const next = document.getElementById(nextElementID);
+next.width = element_size;
+next.height = element_size;
+var next_ctx = next.getContext('2d');
+
+function drawNext(next_ctx) {
+    next_ctx.fillStyle = '#000';
+    next_ctx.fillRect(0, 0, element_size, element_size);
+    drawMatrix(scaleMatrix(player.next_matrix, 3), element_pos, next_ctx)
+}
 
 
 
@@ -235,17 +246,20 @@ function playerMove(offset) {
 
 function playerReset() {
     const pieces = 'TJLOSZI';
-    last = player.matrix
+    if (player.next_matrix == null) {
+        player.next_matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
+    }
+    last_piece = player.matrix
     if (has_just_held == true) {
         if (first_held == true) {
-            player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
+            player.matrix = player.next_matrix
             first_held = false
         } else {
             player.matrix = player.held_matrix
         }
-        player.held_matrix = last
+        player.held_matrix = last_piece
     } else {
-        player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
+        player.matrix = player.next_matrix
     }
     player.pos.y = 0;
     player.pos.x = (arena[0].length / 2 | 0) -
@@ -255,7 +269,9 @@ function playerReset() {
         player.score = 0;
         updateScore();
     }
+    player.next_matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
     drawHold(hold_ctx)
+    drawNext(next_ctx)
 }
 
 function playerRotate(dir) {
@@ -295,7 +311,6 @@ let lastTime = 0;
 
 function update(time = 0) {
     const deltaTime = time - lastTime;
-    console.log(has_just_held, first_held)
 
     dropCounter += deltaTime;
     if (dropCounter > dropInterval) {
@@ -356,6 +371,7 @@ const player = {
     pos: {x: 0, y: 0},
     matrix: null,
     held_matrix: null,
+    next_matrix: null,
     score: 0,
 };
 
